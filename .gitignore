@@ -1,0 +1,10 @@
+
+/.idea/
+/.vscode/
+
+/dataset/
+/log_runs/
+/model_ckpts/
+/submissions/
+
+*.zip
