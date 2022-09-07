@@ -45,8 +45,8 @@ def main(args):
     # initialize the model
     model = build_resnet50(device=device, fine_tune=True, num_classes=8)
     model = model.to(device)
-    ckpt_path = os.path.join(args.model_ckpts,"best_model.pth")
-    _, model_ckpt, _, _ = load_checkpoint(ckpt_path, model, device)
+    model_path = os.path.join(f"ckpts/{args.ckpts}/model","best_model.pth")
+    _, model_ckpt, _, _ = load_checkpoint(model_path, model, device)
 
     preds_collector = []
     model_ckpt.eval()  # put the model in eval mode, so we don't update any parameters
@@ -73,7 +73,7 @@ def main(args):
     assert all(submission_df.index == submission_format.index)
     assert all(submission_df.columns == submission_format.columns)
 
-    submission_df.to_csv(f"{folder}/submission_df.csv")
+    submission_df.to_csv(f"ckpts/{args.ckpts}/submission_df.csv")
 
     print('Create Submission - {}'.format(convert_time(int(time.perf_counter() - t0))))
 
@@ -83,7 +83,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Conser-vision Image Classification")
     parser.add_argument('--data_dir', type=str, default='dataset', metavar='P',
                         help='Path for dataset')
-    parser.add_argument('--model_ckpts', type=str, default='model_ckpts', metavar='P',
+    parser.add_argument('--ckpts', type=str, default='checkpoint', metavar='P',
                         help='Path For Saving the current Model')
     parser.add_argument('--batch_size', type=int, default=32, metavar='N',
                         help='input batch size for training (default: 64)')

@@ -1,14 +1,15 @@
 import os
 import random
 from datetime import datetime
-from sklearn import metrics
-from sklearn.preprocessing import label_binarize
-import numpy as np
-import pandas as pd
+
+import matplotlib.pyplot
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import torch
 from pytz import timezone
+from sklearn import metrics
+from sklearn.preprocessing import label_binarize
 
 plt.style.use("ggplot")
 
@@ -70,7 +71,7 @@ class SaveBestModel:
                     "optimizer_state_dict": optimizer.state_dict(),
                     "loss": criterion,
                 },
-                f"{args.model_ckpts}/best_model.pth",
+                f"ckpts/{args.ckpts}/model/best_model.pth",
             )
 
 
@@ -78,7 +79,7 @@ def save_model(args, model, optimizer, criterion, to_onnx=None):
     """Function to save the trained model to disk."""
     if to_onnx:
         dummy_input = (1, 1, 224, 224)
-        torch.onnx.export(model, dummy_input, f"./{args.model_ckpts}/model.onnx")
+        torch.onnx.export(model, dummy_input, f"./ckpts/{args.ckpts}/model/model.onnx")
     else:
         torch.save(
             {
@@ -87,7 +88,7 @@ def save_model(args, model, optimizer, criterion, to_onnx=None):
                 "optimizer_state_dict": optimizer.state_dict(),
                 "loss": criterion,
             },
-            f"./{args.model_ckpts}/last_model.pth",
+            f"ckpts/{args.ckpts}/model/last_model.pth",
         )
 
 
@@ -137,6 +138,7 @@ def precision_recall(args, y_true, y_pred, species_labels, title):
     average_precision["micro"] = metrics.average_precision_score(y_true, y_pred, average="micro")
 
     fig, ax = plt.subplots(figsize=(8, 6), dpi=300)
+
     lw = 2
     display = metrics.PrecisionRecallDisplay(
         recall=recall["micro"],
@@ -153,6 +155,7 @@ def precision_recall(args, y_true, y_pred, species_labels, title):
         )
         display.plot(ax=ax, lw=lw, name=f"{species_labels[i]}")
 
+    matplotlib.pyplot.plot()
     # add the legend for the iso-f1 curves
     handles, labels = display.ax_.get_legend_handles_labels()
 
@@ -162,7 +165,7 @@ def precision_recall(args, y_true, y_pred, species_labels, title):
     ax.legend(handles=handles, labels=labels, loc="best")
     ax.set_title(f"Precision Recall - {title}")
     fig.tight_layout()
-    fig.savefig(f"{args.model_ckpts}/PRC_{title}.png")
+    fig.savefig(f"ckpts/{args.ckpts}/plots/PRC_{title}.png")
     plt.close()
 
 
@@ -201,14 +204,14 @@ def roc_auc(args, y_true, y_pred, species_labels, title):
     plt.title(f"Receiver Operating Characteristic - {title}")
     plt.legend(loc="lower right")
     plt.tight_layout()
-    plt.savefig(f"{args.model_ckpts}/ROC_{title}.png")
+    plt.savefig(f"ckpts/{args.ckpts}/plots/ROC_{title}.png")
     plt.close()
 
 
 def classification_report(args, y_true, y_pred, species_labels, title=''):
     report = metrics.classification_report(y_true, y_pred, target_names=species_labels, output_dict=True)
     df = pd.DataFrame(report, dtype='float32').transpose()
-    df.to_csv(f'{args.model_ckpts}/CR_{title}.csv', index=True)
+    df.to_csv(f'ckpts/{args.ckpts}/CR_{title}.csv', index=True)
 
 
 def cf_matrix(args, y_true, y_pred, species_labels, title=''):
@@ -220,5 +223,5 @@ def cf_matrix(args, y_true, y_pred, species_labels, title=''):
     plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
     ax.set_title(f"Confusion Matrix - {title}")
     fig.tight_layout()
-    fig.savefig(f"{args.model_ckpts}/CM_{title}.png")
+    fig.savefig(f"ckpts/{args.ckpts}/plots/CM_{title}.png")
     plt.close()

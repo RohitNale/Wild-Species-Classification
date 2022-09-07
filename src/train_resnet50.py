@@ -125,8 +125,7 @@ def train(args):
     best_valid_loss = float('inf')  # check best valid loss
 
     # sanity_check(model, train_loader, criterion, optimizer, epochs=10)
-    log_dir = f'./log_runs/resnet50'
-    logger = SummaryWriter(log_dir=log_dir)
+    logger = SummaryWriter(log_dir=f'./log_runs/{args.ckpts}')
 
     print(f"[INFO]: Run {args.epochs} Epochs")
     # create output format
@@ -197,8 +196,7 @@ def resume(args):
     best_valid_loss = float('inf')  # check best valid loss
     # sanity_check(model, train_loader, criterion, optimizer, epochs=10)
 
-    if not args.dry_run:
-        logger = SummaryWriter(log_dir=f'./log_runs/resnet50')
+    logger = SummaryWriter(log_dir=f'./log_runs/resnet50')
 
     epochs = p_epochs + args.epochs  # train for more epochs
     print(f"[INFO] Train for {args.epochs} more epochs...")
@@ -246,7 +244,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Conser-vision Image Classification")
     parser.add_argument('--data_dir', type=str, default='dataset', metavar='P',
                         help='Path for dataset')
-    parser.add_argument('--model_ckpts', type=str, default='model_ckpts', metavar='P',
+    parser.add_argument('--ckpts', type=str, default='checkpoint', metavar='P',
                         help='Path For Saving the current Model')
     parser.add_argument('--resume', action='store_true', default=False,
                         help='Resume training')
@@ -264,7 +262,7 @@ if __name__ == "__main__":
     opt = parser.parse_args()
     # for i in vars(opt): print(f"{i:>12}", ':', vars(opt)[i])
 
-    create_folder(opt.model_ckpts)
+    create_folder(f"./ckpts/{opt.ckpts}")
 
     if opt.resume:
         resume(opt)

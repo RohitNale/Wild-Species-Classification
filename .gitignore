@@ -1,10 +1,51 @@
+# Repo-specific GitIgnore ----------------------------------------------------------------------------------------------
+*.jpg
+*.jpeg
+*.png
+*.bmp
+*.tif
+*.tiff
+*.heic
+*.JPG
+*.JPEG
+*.PNG
+*.BMP
+*.TIF
+*.TIFF
+*.HEIC
+*.mp4
+*.mov
+*.MOV
+*.avi
+*.data
+*.json
+*.zip
+*.cfg
+!setup.cfg
 
-/.idea/
-/.vscode/
-
+# Folders --------------------------------------------------------------------------------------------------------------
 /dataset/
 /log_runs/
 /model_ckpts/
 /submissions/
 
-*.zip
+# IDE --------------------------------------------------------------------------------------------------------------
+/.idea/
+/.vscode/
+
+# Neural Network weights -----------------------------------------------------------------------------------------------
+*.weights
+*.pt
+*.pb
+*.onnx
+*.engine
+*.mlmodel
+*.torchscript
+*.tflite
+*.h5
+*_saved_model/
+*_web_model/
+*_openvino_model/
+
+# Jupyter Notebook
+.ipynb_checkpoints
